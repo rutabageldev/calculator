@@ -1,9 +1,8 @@
-body {
-    background-color: red;
+.calculator-display {
+    background-color: lightblue;
 }
 
 .number-container {
-    background-color: red;
     display: flex;
     flex-direction: row-reverse;
 }
