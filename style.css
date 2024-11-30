@@ -1,0 +1,9 @@
+body {
+    background-color: red;
+}
+
+.number-container {
+    background-color: red;
+    display: flex;
+    flex-direction: row-reverse;
+}
