@@ -5,7 +5,8 @@ const calculatorContainer = document.querySelector('.calculator-container');
 const operatorContainer = document.querySelector('.operator-container');
 
 const calculator = {
-    state: 'idle', //can be idle, add, subtract, multiply, or divide
+    currentSign: 'POSITIVE',
+    state: 'IDLE', //can be IDLE, ADD, SUBTRACT, MULTIPLY, or DIVIDE
     value: '0', //value displayed on calculator display
 }
 
@@ -29,30 +30,28 @@ function buildCalculator() {
 }
 
 function buildNumberButtons() {
-    for (let i = 9; i > -3; i--) {    
-        const numberButton = document.createElement("button");
-        numberButton.classList.add("number-button");
-        if (i > 0) {
-            numberButton.textContent = i;
-            numberButton.setAttribute('button-type', 'NUMBER');
-        } else {
-            switch (i) {
-                case (0):
-                    numberButton.textContent = ".";
-                    numberButton.setAttribute('button-type', 'OPERATOR');
-                    break;
-                case (-1):
-                    numberButton.textContent = 0;
-                    numberButton.setAttribute('button-type', 'NUMBER');
-                    break;
-                case (-2):
-                    numberButton.textContent="+/-";
-                    numberButton.setAttribute('button-type', 'OPERATOR');
-                    break;
-            }
-        }
+    const numberButtons = [
+        {symbol: 9, type : 'NUMBER'},
+        {symbol: 8, type : 'NUMBER'},
+        {symbol: 7, type : 'NUMBER'},
+        {symbol: 6, type : 'NUMBER'},
+        {symbol: 5, type : 'NUMBER'},
+        {symbol: 4, type : 'NUMBER'},
+        {symbol: 3, type : 'NUMBER'},
+        {symbol: 2, type : 'NUMBER'},
+        {symbol: 1, type : 'NUMBER'},
+        {symbol: '.', type : 'DECIMAL'},
+        {symbol: 0, type : 'NUMBER'},
+        {symbol: '+/-', type : 'CHANGE-SIGN'},
+    ];
+
+    numberButtons.forEach(number => {
+        const numberButton = document.createElement('button');
+        numberButton.classList.add('number-button');
+        numberButton.setAttribute('type', number.type);
+        numberButton.textContent = number.symbol;
         numberContainer.appendChild(numberButton);
-    }
+    });
 }
 
 function buildDisplay() {
@@ -73,8 +72,7 @@ function buildOperatorButtons(){
     operators.forEach(operator => {
         const operatorButton = document.createElement('button');
         operatorButton.classList.add('operator-button');
-        operatorButton.setAttribute('button-type', 'OPERATOR');
-        operatorButton.setAttribute('operator-type', operator.type);
+        operatorButton.setAttribute('type', operator.type);
         operatorButton.textContent = operator.symbol;
         operatorContainer.appendChild(operatorButton);
     })
@@ -92,7 +90,12 @@ function handleInput(e) {
                 calculator.value = calculator.value + buttonValue
             }
             break;
-        case ('OPERATOR'):
+        case ('ADD'):
+        case ('CHANGE-SIGN'):
+        case ('DECIMAL'):
+        case ('DIVIDE'):
+        case ('MULTIPLY'):
+        case ('SUBTRACT'):    
             console.log('operator!');
             break;
         case ('CLEAR'):
@@ -104,7 +107,7 @@ function handleInput(e) {
 }
 
 function getButtonType(e) {
-    return e.target.getAttribute('button-type');
+    return e.target.getAttribute('type');
 }
 
 function getButtonValue(e) {
