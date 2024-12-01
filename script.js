@@ -2,6 +2,7 @@ const numberContainer = document.querySelector(".number-container");
 const topRowContainer = document.querySelector(".top-container");
 const bottomRowContainer = document.querySelector(".bottom-container");
 const calculatorContainer = document.querySelector('.calculator-container');
+const operatorContainer = document.querySelector('.operator-container');
 
 const calculator = {
     state: 'idle', //can be idle, add, subtract, multiply, or divide
@@ -14,7 +15,7 @@ const calculatorDisplay = document.querySelector('.calculator-display');
 
 
 function attachButtonListeners() {
-    const numberButtons = document.querySelectorAll('.number-button');
+    const numberButtons = document.querySelectorAll('button');
     numberButtons.forEach(button => {
         button.addEventListener("click", (e) => handleInput(e));
     });
@@ -23,6 +24,7 @@ function attachButtonListeners() {
 function buildCalculator() {
     buildDisplay();
     buildNumberButtons();
+    buildOperatorButtons();
     attachButtonListeners();
 }
 
@@ -59,6 +61,23 @@ function buildDisplay() {
     calcDisplay.textContent = ' ';
 
     calculatorContainer.prepend(calcDisplay);
+}
+
+function buildOperatorButtons(){
+    const operators = [
+        {symbol: '+', type: 'ADD'},
+        {symbol: '-', type: 'SUBTRACT'},
+        {symbol: 'x', type: 'MULTIPLY'},
+        {symbol: '÷', type: 'DIVIDE'},
+    ]
+    operators.forEach(operator => {
+        const operatorButton = document.createElement('button');
+        operatorButton.classList.add('operator-button');
+        operatorButton.setAttribute('button-type', 'OPERATOR');
+        operatorButton.setAttribute('operator-type', operator.type);
+        operatorButton.textContent = operator.symbol;
+        operatorContainer.appendChild(operatorButton);
+    })
 }
 
 function handleInput(e) {

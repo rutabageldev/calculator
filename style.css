@@ -21,8 +21,13 @@ body {
 }
 
 .button-container {
+    align-items: center;
+    background-color: darkgrey;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    gap: 8px;
+    justify-content: space-evenly;
+    padding: 8px;
     width: 100%;
 }
 
@@ -65,3 +70,18 @@ body {
     padding: 8px;
     width: 100%;
 }
+
+.operator-button {
+    display: flex;
+    width: 100%
+}
+
+.operator-container {
+    align-items: center;
+    background-color: darkgrey;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    justify-content: space-evenly;
+    padding: 8px;
+    width: 25%;
