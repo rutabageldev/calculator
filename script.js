@@ -1,3 +1,5 @@
+const isDebugMode = true;
+
 const numberContainer = document.querySelector(".number-container");
 const topRowContainer = document.querySelector(".top-container");
 const bottomRowContainer = document.querySelector(".bottom-container");
@@ -7,12 +9,13 @@ const operatorContainer = document.querySelector('.operator-container');
 const calculator = {
     currentSign: 'POSITIVE',
     state: 'IDLE', //can be IDLE, ADD, SUBTRACT, MULTIPLY, or DIVIDE
+    savedValue: null,
     value: '0', //value displayed on calculator display
 }
 
 
 buildCalculator();
-console.log(`Initial calculator state: currentSign-${calculator.currentSign}, state=${calculator.state}, value-${calculator.value}`);
+logCalculatorState();
 const calculatorDisplay = document.querySelector('.calculator-display');
 
 function attachButtonListeners() {
@@ -131,4 +134,14 @@ function getButtonType(e) {
 function getButtonValue(e) {
     console.log("User Selection: " + e.target.textContent);
     return e.target.textContent;
+}
+
+function logCalculatorState(){
+    if (isDebugMode) {
+    console.log(`Calculator State:
+    Value: ${calculator.value}
+    Saved Value: ${calculator.savedValue};
+    Current Sign" ${calculator.currentSign}
+    State: ${calculator.state}`);
+    }
 }
