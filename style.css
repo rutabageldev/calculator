@@ -25,7 +25,6 @@ body {
     background-color: darkgrey;
     display: flex;
     flex-direction: row;
-    gap: 8px;
     justify-content: space-evenly;
     padding: 8px;
     width: 100%;
@@ -85,3 +84,4 @@ body {
     justify-content: space-evenly;
     padding: 8px;
     width: 25%;
+}
