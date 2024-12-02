@@ -45,6 +45,16 @@ logCalculatorState();
 const calculatorDisplay = document.querySelector('.calculator-display');
 
 
+function addDecimal() {
+    if (calculator.value.includes('.')) {
+        if(isDebugMode) console.log('Failed to add decimal, already had one.');
+    } else {
+        calculator.value += '.';
+        if(isDebugMode) console.log('Successfully added decimal.');
+        calculator.overwritable = false;
+    }
+}
+
 function addInputs() {
     if(isDebugMode) console.log('Adding numbers...');
     let output = parseFloat(calculator.savedValue) + parseFloat(calculator.value);
@@ -190,11 +200,7 @@ function handleInput(e) {
             break;
 
         case buttonTypes.add:
-            calculator.state = calculatorStates.add;
-            calculator.savedValue = calculator.value;
-            calculator.value = 0;
-            calculator.overwritable = true;
-            if(isDebugMode) logCalculatorState();
+            processOperator(calculatorStates.add);
             break;
 
         case buttonTypes.changeSign:
@@ -205,13 +211,15 @@ function handleInput(e) {
             if(isDebugMode) console.log(`Clearing calculator value`);
             calculator.state = calculatorStates.idle;
             calculator.value = 0;
+            calculator.overwritable = true;
+            break;
+
+        case buttonTypes.decimal: 
+            addDecimal();
             break;
 
         case buttonTypes.divide:
-            calculator.state = calculatorStates.divide;
-            calculator.savedValue = calculator.value;
-            calculator.value = 0;
-            calculator.overwritable = true;
+            processOperator(calculatorStates.divide);
             if(isDebugMode) logCalculatorState();
             break;
 
@@ -244,22 +252,14 @@ function handleInput(e) {
             break;
 
         case buttonTypes.multiply: 
-            calculator.state = calculatorStates.multiply;
-            calculator.savedValue = calculator.value;
-            calculator.value = 0;
-            calculator.overwritable = true;
-            if(isDebugMode) logCalculatorState();
+            processOperator(calculatorStates.multiply); 
             break;
         
         case buttonTypes.subtract: 
-            calculator.state = calculatorStates.subtract;
-            calculator.savedValue = calculator.value;
-            calculator.value = 0;
-            calculator.overwritable = true;
-            if(isDebugMode) logCalculatorState();
+            processOperator(calculatorStates.subtract);
             break;
 
-        case buttonTypes.decimal:  
+         
         if(isDebugMode) console.log(`Operator selected: ${buttonType}`);
             break;
         
@@ -297,6 +297,22 @@ function multiplyInputs() {
     calculator.state = calculatorStates.idle;
     calculator.overwritable = true;
     if(isDebugMode) console.log('Numbers multiplied successfully.');
+}
+
+function processOperator(operation) {
+    calculator.overwritable = true;
+    if(calculator.state != calculatorStates.idle) {
+        calculator.state = operation;
+        if(isDebugMode) logCalculatorState();
+        return;
+    } else {
+    calculator.state = operation;
+    calculator.savedValue = calculator.value;
+    calculator.value = '0';
+    if(isDebugMode) logCalculatorState();
+    return;
+    }
+
 }
 
 function subtractInputs(){
