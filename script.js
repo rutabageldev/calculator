@@ -25,6 +25,7 @@ const buttonTypes = {
 const calculatorStates = {
     add: 'ADD',
     divide: 'DIVIDE',
+    error: 'ERROR',
     idle: 'IDLE',
     multiply: 'MULTIPLY',
     subtract: 'SUBTRACT',
@@ -173,6 +174,13 @@ function handleInput(e) {
             calculator.value = 0;
             break;
 
+        case buttonTypes.divide:
+            calculator.state = calculatorStates.divide;
+            calculator.savedValue = calculator.value;
+            calculator.value = 0;
+            if(isDebugMode) logCalculatorState();
+            break;
+
         case buttonTypes.evaluate:
             switch (calculator.state) {
                 case (calculatorStates.idle):
@@ -213,8 +221,7 @@ function handleInput(e) {
             break;
 
         case buttonTypes.changeSign:
-        case buttonTypes.decimal:
-        case buttonTypes.divide:  
+        case buttonTypes.decimal:  
         if(isDebugMode) console.log(`Operator selected: ${buttonType}`);
             break;
         
