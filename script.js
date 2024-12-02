@@ -326,5 +326,16 @@ function subtractInputs(){
 }
 
 function updateDisplay() {
+    let maxDisplayLength = 10;
+
+    if(calculator.value.toString().length > maxDisplayLength) {
+        if (!isNaN(calculator.value)) {
+            calculator.value = parseFloat(calculator.value).toPrecision(maxDisplayLength);
+        } else {
+            calculator.state = calculatorStates.error;
+            calculator.value = 'E R R O R';
+        }
+    }
+
     calculatorDisplay.textContent = calculator.value;
 }
