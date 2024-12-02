@@ -20,6 +20,24 @@ body {
     max-width: 600px;
 }
 
+.bottom-container {
+    align-items: center;
+    background-color: darkgrey;
+    display: flex;
+    flex-direction: row-reverse;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: space-evenly;
+    padding: 16px 8px 16px 8px;
+    width: 100%;
+}
+
+.bottom-button {
+    display: flex;
+    flex: 1 0 45%;
+    width: 100%
+}
+
 .button-container {
     align-items: center;
     background-color: darkgrey;
@@ -79,7 +97,7 @@ body {
     align-items: center;
     background-color: darkgrey;
     display: flex;
-    flex-direction: column;
+    flex-direction: column-reverse;
     gap: 8px;
     justify-content: space-evenly;
     padding: 8px;
