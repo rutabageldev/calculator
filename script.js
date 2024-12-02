@@ -33,10 +33,10 @@ const calculatorStates = {
 
 //Define calculator object to centralize state management
 const calculator = {
-    currentSign: 'POSITIVE',
-    state: 'IDLE', //can be IDLE, ADD, SUBTRACT, MULTIPLY, or DIVIDE
-    savedValue: null,
+    state: calculatorStates.idle, //can be anything in the calculatorStates object
+    savedValue: null, //secondary value used to complete calculations
     value: '0', //value displayed on calculator display
+    overwritable: true, //used to track if the displayed value should be overwritten when a new number is pressed
 }
 
 //Initialize calculator
@@ -51,6 +51,7 @@ function addInputs() {
     calculator.value = output;
     calculator.savedValue = null;
     calculator.state = calculatorStates.idle;
+    calculator.overwritable = true;
     if(isDebugMode) console.log('Numbers added successfully.');
 }
 
@@ -139,6 +140,10 @@ function buildOperatorButtons(){
     if(isDebugMode) console.log(`Operator buttons built successfully...`);
 }
 
+function changeSign() {
+    calculator.value = 0 - calculator.value;
+}
+
 function createButton (symbol, type, buttonClass) {
     const button = document.createElement('button');
     button.classList.add(buttonClass);
@@ -147,17 +152,40 @@ function createButton (symbol, type, buttonClass) {
     return button;
 }
 
+function divideInputs() {
+    if(isDebugMode) console.log('Dividing numbers...');
+    if (calculator.value == '0') {
+        calculator.state = calculatorStates.error;
+        calculator.value = 'E R R O R';
+        if(isDebugMode) console.log('Division failed, attemped to divide by 0.'); 
+    } else {
+        let output = parseFloat(calculator.savedValue) / parseFloat(calculator.value);
+        calculator.value = output;
+        calculator.savedValue = null;
+        calculator.state = calculatorStates.idle;
+        if(isDebugMode) console.log('Numbers divided successfully.'); 
+    }
+    if(isDebugMode) logCalculatorState();
+}
+
 function handleInput(e) {
     let buttonValue = getButtonValue(e);
     let buttonType = getButtonType(e);
 
     if(isDebugMode) console.log(`Button clicked: ${buttonValue} (Type: ${buttonType})`);
 
+    if(calculator.state == calculatorStates.error && buttonType != buttonTypes.clear) {
+        if(isDebugMode) console.log('Calculator in error state, must be cleared.');
+        return;
+    }
+
     switch (buttonType) {
         case buttonTypes.number:
             if(isDebugMode) console.log(`Calculator value before update: ${calculator.value}`);
-            if (calculator.value == '0') calculator.value = buttonValue; 
-            else calculator.value += buttonValue;
+            if (calculator.overwritable) {
+                calculator.value = buttonValue;
+                calculator.overwritable = false;
+            } else calculator.value += buttonValue;
             if(isDebugMode) console.log(`Updated calculator value: ${calculator.value}`);
             break;
 
@@ -165,7 +193,12 @@ function handleInput(e) {
             calculator.state = calculatorStates.add;
             calculator.savedValue = calculator.value;
             calculator.value = 0;
+            calculator.overwritable = true;
             if(isDebugMode) logCalculatorState();
+            break;
+
+        case buttonTypes.changeSign:
+            changeSign();
             break;
 
         case buttonTypes.clear:
@@ -178,6 +211,7 @@ function handleInput(e) {
             calculator.state = calculatorStates.divide;
             calculator.savedValue = calculator.value;
             calculator.value = 0;
+            calculator.overwritable = true;
             if(isDebugMode) logCalculatorState();
             break;
 
@@ -191,6 +225,10 @@ function handleInput(e) {
                     addInputs();
                     break;
 
+                case (calculatorStates.divide):
+                    divideInputs();
+                    break;
+
                 case (calculatorStates.multiply):
                     multiplyInputs();
                     break;
@@ -199,7 +237,6 @@ function handleInput(e) {
                     subtractInputs();
                     break;
 
-                case (calculatorStates.divide):
                 default:
                     if(isDebugMode) console.log(`Unhandled button type: ${buttonType}`);
                     break;
@@ -210,6 +247,7 @@ function handleInput(e) {
             calculator.state = calculatorStates.multiply;
             calculator.savedValue = calculator.value;
             calculator.value = 0;
+            calculator.overwritable = true;
             if(isDebugMode) logCalculatorState();
             break;
         
@@ -217,10 +255,10 @@ function handleInput(e) {
             calculator.state = calculatorStates.subtract;
             calculator.savedValue = calculator.value;
             calculator.value = 0;
+            calculator.overwritable = true;
             if(isDebugMode) logCalculatorState();
             break;
 
-        case buttonTypes.changeSign:
         case buttonTypes.decimal:  
         if(isDebugMode) console.log(`Operator selected: ${buttonType}`);
             break;
@@ -246,8 +284,7 @@ function logCalculatorState(){
     if (isDebugMode) {
     console.log(`Calculator State:
     Value: ${calculator.value}
-    Saved Value: ${calculator.savedValue};
-    Current Sign: ${calculator.currentSign}
+    Saved Value: ${calculator.savedValue}
     State: ${calculator.state}`);
     }
 }
@@ -258,7 +295,7 @@ function multiplyInputs() {
     calculator.value = output;
     calculator.savedValue = null;
     calculator.state = calculatorStates.idle;
-    updateDisplay();
+    calculator.overwritable = true;
     if(isDebugMode) console.log('Numbers multiplied successfully.');
 }
 
@@ -268,7 +305,7 @@ function subtractInputs(){
     calculator.value = output;
     calculator.savedValue = null;
     calculator.state = calculatorStates.idle;
-    updateDisplay();
+    calculator.overwritable = true;
     if(isDebugMode) console.log('Numbers subtracted successfully.');
 }
 
