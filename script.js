@@ -173,6 +173,7 @@ function divideInputs() {
         calculator.value = output;
         calculator.savedValue = null;
         calculator.state = calculatorStates.idle;
+        calculator.overwritable = true;
         if(isDebugMode) console.log('Numbers divided successfully.'); 
     }
     if(isDebugMode) logCalculatorState();
@@ -224,10 +225,13 @@ function handleInput(e) {
             break;
 
         case buttonTypes.evaluate:
-            switch (calculator.state) {
-                case (calculatorStates.idle):
-                    if(isDebugMode) console.log(`Calculator state; ${calculator.state}, no action taken.`);
-                    break;
+            if(isDebugMode) logCalculatorState();
+            if (calculator.state === calculatorStates.idle || calculator.savedValue === null || calculator.overwritable) {
+                if(isDebugMode) console.log(`Calculator state; ${calculator.state}, no action taken.`);
+                break;
+            }
+            
+            switch (calculator.state) {                   
 
                 case (calculatorStates.add):
                     addInputs();
@@ -249,6 +253,10 @@ function handleInput(e) {
                     if(isDebugMode) console.log(`Unhandled button type: ${buttonType}`);
                     break;
             }
+
+            calculator.state = calculatorStates.idle;
+            calculator.savedValue = null;
+            if(isDebugMode) logCalculatorState();
             break;
 
         case buttonTypes.multiply: 
@@ -283,6 +291,7 @@ function getButtonValue(e) {
 function logCalculatorState(){
     if (isDebugMode) {
     console.log(`Calculator State:
+    Overwritable: ${calculator.overwritable}
     Value: ${calculator.value}
     Saved Value: ${calculator.savedValue}
     State: ${calculator.state}`);
@@ -300,18 +309,45 @@ function multiplyInputs() {
 }
 
 function processOperator(operation) {
-    calculator.overwritable = true;
-    if(calculator.state != calculatorStates.idle) {
+    // Prevent invalid operator sequences 
+    if (calculator.overwritable) {
+        if(isDebugMode) console.log('Invalid operator sequence ignored');
         calculator.state = operation;
-        if(isDebugMode) logCalculatorState();
+        calculator.savedValue = calculator.value;
         return;
-    } else {
-    calculator.state = operation;
+    }
+
+    // If there's a previous operation, calculate first
+    if(calculator.state != calculatorStates.idle && calculator.savedValue != null) {
+        switch (calculator.state) {
+
+            case (calculatorStates.add):
+                addInputs();
+                break;
+
+            case (calculatorStates.divide):
+                divideInputs();
+                break;
+
+            case (calculatorStates.multiply):
+                multiplyInputs();
+                break;
+
+                case (calculatorStates.subtract):
+                subtractInputs();
+                break;
+        }
+        
+    }
+
     calculator.savedValue = calculator.value;
-    calculator.value = '0';
+
+    // Set new operator state
+    calculator.state = operation;
+    calculator.overwritable = true;
+
     if(isDebugMode) logCalculatorState();
     return;
-    }
 
 }
 
@@ -330,7 +366,7 @@ function updateDisplay() {
 
     if(calculator.value.toString().length > maxDisplayLength) {
         if (!isNaN(calculator.value)) {
-            calculator.value = parseFloat(calculator.value).toPrecision(maxDisplayLength);
+            calculator.value = parseFloat(parseFloat(calculator.value).toPrecision(maxDisplayLength));
         } else {
             calculator.state = calculatorStates.error;
             calculator.value = 'E R R O R';
