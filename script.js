@@ -373,6 +373,44 @@ function simulateButtonAttributes(e){
     if (!isNaN(key)) {
         buttonValue = key;
         buttonType = buttonTypes.number;
+    } else {
+        switch (key) {
+            case '+':
+                buttonValue = '+';
+                buttonType = buttonTypes.add;
+                break;
+
+            case '-':
+                buttonValue = '-';
+                buttonType = buttonTypes.subtract;
+                break;
+                
+            case '*':
+                buttonValue = '*';
+                buttonType = buttonTypes.multiply;
+                break;
+                
+            case '/':
+                buttonValue = '/';
+                buttonType = buttonTypes.divide;
+                break;
+                
+            case '=':
+            case 'Enter':
+                buttonValue = '=';
+                buttonType = buttonTypes.evaluate;
+                break;
+                
+            case '.':
+                buttonValue = '.';
+                buttonType = buttonTypes.decimal;
+                break;
+                
+            case 'Escape':
+                buttonValue = 'Clear';
+                buttonType = buttonTypes.clear;
+                break;
+        }
     }
 
     return [buttonValue, buttonType];
