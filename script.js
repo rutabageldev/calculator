@@ -6,6 +6,8 @@ const bottomContainer = document.querySelector('.bottom-container');
 const numberContainer = document.querySelector(".number-container");
 const operatorContainer = document.querySelector('.operator-container');
 
+document.addEventListener('keydown', (e) => handleInput(e));
+
 //Define array to manage button types
 const buttonTypes = {
     add: 'ADD',
@@ -180,8 +182,19 @@ function divideInputs() {
 }
 
 function handleInput(e) {
-    let buttonValue = getButtonValue(e);
-    let buttonType = getButtonType(e);
+    let buttonValue, buttonType;
+    
+    if(e.type === 'keydown') {
+      let  attributes = simulateButtonAttributes(e);
+      buttonValue = attributes[0];
+      buttonType = attributes[1];
+      console.log("buttonValue: " + buttonValue);
+      console.log("buttonType: " + buttonType);
+    }
+    else {    
+        buttonValue = getButtonValue(e);
+        buttonType = getButtonType(e);
+    }
 
     if(isDebugMode) console.log(`Button clicked: ${buttonValue} (Type: ${buttonType})`);
 
@@ -349,6 +362,20 @@ function processOperator(operation) {
     if(isDebugMode) logCalculatorState();
     return;
 
+}
+
+function simulateButtonAttributes(e){
+    let buttonValue, buttonType;
+    const key = e.key;
+
+    if (isDebugMode) console.log(`Key pressed: ${key}`);
+
+    if (!isNaN(key)) {
+        buttonValue = key;
+        buttonType = buttonTypes.number;
+    }
+
+    return [buttonValue, buttonType];
 }
 
 function subtractInputs(){
